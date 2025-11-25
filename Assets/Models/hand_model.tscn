@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://csqccm68ep7ox"]
+
+[ext_resource type="PackedScene" uid="uid://g6tb57e2ewlj" path="res://Assets/Models/HandModel.glb" id="1_s2ywh"]
+[ext_resource type="Material" uid="uid://bve0ydnggk5hd" path="res://Assets/Textures/Outline.tres" id="2_o1c8k"]
+
+[node name="HandModel" instance=ExtResource("1_s2ywh")]
+
+[node name="Hand" parent="." index="0"]
+material_overlay = ExtResource("2_o1c8k")

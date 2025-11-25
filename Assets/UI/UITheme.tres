@@ -1,0 +1,8 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dcbcfdb6b1kkv"]
+
+[ext_resource type="FontFile" uid="uid://dn7g1oj8x30t7" path="res://Assets/UI/AnonymousPro-Bold.ttf" id="1_gnkac"]
+
+[resource]
+default_font = ExtResource("1_gnkac")
+default_font_size = 32
+VBoxContainer/constants/separation = 8

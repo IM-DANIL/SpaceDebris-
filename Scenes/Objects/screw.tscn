@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpv0dfhjwb3h4"]
+
+[ext_resource type="PackedScene" uid="uid://dvfhiyfer54yu" path="res://Scenes/Objects/default_debris.tscn" id="1_1iryy"]
+[ext_resource type="PackedScene" uid="uid://b86bde650d0ps" path="res://Assets/Models/ScrewModel.glb" id="2_kipos"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kipos"]
+radius = 0.232176
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ts71p"]
+height = 0.286133
+radius = 0.191895
+
+[node name="screw" instance=ExtResource("1_1iryy")]
+
+[node name="CollisionShape" parent="debris_area" index="0"]
+shape = SubResource("SphereShape3D_kipos")
+
+[node name="CollisionShape" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_ts71p")
+
+[node name="screw_model" parent="." index="3" instance=ExtResource("2_kipos")]

@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwwsqvhy2h8wc"]
+
+[ext_resource type="PackedScene" uid="uid://dm77gev6s2wcx" path="res://Assets/Models/PlayerModel.glb" id="1_r7win"]
+[ext_resource type="Material" uid="uid://bve0ydnggk5hd" path="res://Assets/Textures/Outline.tres" id="2_bmv3p"]
+
+[node name="PlayerModel" instance=ExtResource("1_r7win")]
+
+[node name="Body" parent="." index="0"]
+material_overlay = ExtResource("2_bmv3p")
+visibility_range_begin = 0.25
+
+[node name="Foot" parent="." index="1"]
+material_overlay = ExtResource("2_bmv3p")
+visibility_range_begin = 0.5
+
+[node name="Knees" parent="." index="2"]
+material_overlay = ExtResource("2_bmv3p")
+visibility_range_begin = 0.5
+
+[node name="Shoulder" parent="." index="3"]
+material_overlay = ExtResource("2_bmv3p")
+visibility_range_begin = 0.25
+
+[node name="Face" parent="." index="4"]
+material_override = ExtResource("2_bmv3p")
+visibility_range_begin = 0.5
+
+[node name="Ears" parent="." index="5"]
+visible = false
+material_overlay = ExtResource("2_bmv3p")

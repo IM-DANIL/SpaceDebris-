@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=3 uid="uid://dtydpv1ckad7w"]
+
+[ext_resource type="Texture2D" uid="uid://dk3cr4pc74pi0" path="res://Assets/Textures/Texture_4.png" id="1_u554f"]
+[ext_resource type="PackedScene" uid="uid://dff5dslcvxaaw" path="res://Scenes/Objects/default_player.tscn" id="2_hau2v"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_u554f"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_hau2v"]
+sky_material = SubResource("ProceduralSkyMaterial_u554f")
+
+[sub_resource type="Environment" id="Environment_u64e8"]
+background_mode = 2
+sky = SubResource("Sky_hau2v")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u64e8"]
+albedo_texture = ExtResource("1_u554f")
+uv1_triplanar = true
+
+[node name="GuideLevel" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_u64e8")
+
+[node name="Level" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_u64e8")
+use_collision = true
+collision_layer = 5
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, -6, 0)
+radius = 4.0
+height = 12.0
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0, 1, 0, -6, -10.5)
+size = Vector3(3, 3, 9)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -15.5)
+size = Vector3(5, 5, 1)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, -15.5)
+size = Vector3(4, 1, 1)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, -4.5, -6, 0)
+size = Vector3(2, 1, 1)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, -11.5, -6, 0)
+size = Vector3(12, 1, 6)
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 0.25881907, 0.9659258, 0, -0.9659258, 0.25881907, 0, -1.6176192, 16.037037)
+radius = 4.0
+height = 14.5
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0, 1, 0, -6, 7)
+size = Vector3(3, 3, 2)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.70710677, 0.70710677, 0, -0.68301266, 0.68301266, -0.25881904, -0.1830127, 0.1830127, 0.9659258, 0, 0.49999997, 8.100001)
+size = Vector3(3, 3, 2)
+
+[node name="CSGTorus3D" type="CSGTorus3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.9659258, 0, -0.9659258, 0.258819, 0, -3.7, 24)
+inner_radius = 1.0
+outer_radius = 6.0
+sides = 6
+ring_sides = 4
+
+[node name="DefaultPlayer" parent="." instance=ExtResource("2_hau2v")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)

@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvfhiyfer54yu"]
+
+[ext_resource type="Script" uid="uid://g0svn7ulrq0c" path="res://Scripts/debris_script.gd" id="1_eb1tj"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_lily1"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="default_debris" type="RigidBody3D" groups=["debris", "object"]]
+collision_layer = 4
+collision_mask = 5
+gravity_scale = 0.0
+can_sleep = false
+script = ExtResource("1_eb1tj")
+
+[node name="debris_synchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_lily1")
+
+[node name="debris_area" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 5
+
+[node name="CollisionShape" type="CollisionShape3D" parent="debris_area"]
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+
+[connection signal="body_entered" from="debris_area" to="." method="_on_debris_area_body_entered"]

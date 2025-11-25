@@ -1,0 +1,78 @@
+[gd_scene load_steps=6 format=3 uid="uid://clilo3yb4t5ji"]
+
+[ext_resource type="Script" uid="uid://cwc7iugpwxey3" path="res://Scripts/garbage_scow_script.gd" id="1_8vul7"]
+[ext_resource type="Texture2D" uid="uid://dnvg4txeww0wy" path="res://Assets/Textures/Texture_06.png" id="1_d0ijl"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_d0ijl"]
+height = 7.5
+radius = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0ijl"]
+cull_mode = 1
+albedo_color = Color(0, 0, 0, 1)
+grow = true
+grow_amount = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8vul7"]
+resource_local_to_scene = true
+next_pass = SubResource("StandardMaterial3D_d0ijl")
+albedo_texture = ExtResource("1_d0ijl")
+uv1_triplanar = true
+
+[node name="garbage_scow" type="Node3D"]
+script = ExtResource("1_8vul7")
+
+[node name="debris_area" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="debris_area"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.20206e-07, -2.75)
+visible = false
+shape = SubResource("CylinderShape3D_d0ijl")
+
+[node name="model_mesh" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_8vul7")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
+size = Vector3(1, 3, 3)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8)
+size = Vector3(1, 3, 3)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(2.98023e-08, -1, 0, 1, 2.98023e-08, 0, 0, 0, 1, 0, 0, 2.5)
+size = Vector3(1, 3, 3)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(2.98023e-08, -1, 0, 1, 2.98023e-08, 0, 0, 0, 1, 0, 0, -8.25)
+size = Vector3(1, 3, 2.5)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -1.42062e-07, -7.25)
+radius = 2.0
+height = 1.5
+sides = 6
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -1.42062e-07, 1.75)
+radius = 2.0
+height = 1.5
+sides = 6
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+radius = 1.5
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.6, -2.75)
+size = Vector3(2, 0.2, 7.5)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="model_mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -2.75)
+size = Vector3(2, 0.2, 7.5)
+
+[connection signal="area_entered" from="debris_area" to="." method="_on_object_area_entered"]

@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://d2hodpvfsybf1"]
+
+[node name="MeteorShowerNode" type="Node3D"]

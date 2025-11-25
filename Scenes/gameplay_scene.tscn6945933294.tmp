@@ -1,0 +1,236 @@
+[gd_scene load_steps=11 format=3 uid="uid://bsmjar5ytjidp"]
+
+[ext_resource type="Texture2D" uid="uid://bxpsm1lv87ady" path="res://assets/texture_01.png" id="1_01stm"]
+[ext_resource type="Texture2D" uid="uid://banmw4sgpcber" path="res://assets/texture_03.png" id="4_mvhas"]
+[ext_resource type="Shader" uid="uid://bxhf31ymwt7jx" path="res://shaders/avg_point_shader.gdshader" id="5_27dq3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_01stm"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_b2a1o"]
+sky_material = SubResource("ProceduralSkyMaterial_01stm")
+
+[sub_resource type="Environment" id="Environment_xpbwm"]
+background_mode = 2
+sky = SubResource("Sky_b2a1o")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b2a1o"]
+albedo_texture = ExtResource("1_01stm")
+uv1_triplanar = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1126i"]
+render_priority = 0
+shader = ExtResource("5_27dq3")
+shader_parameter/albedo_texture = ExtResource("4_mvhas")
+shader_parameter/alpha = 0.25
+
+[sub_resource type="SphereMesh" id="SphereMesh_cd025"]
+
+[sub_resource type="GDScript" id="GDScript_mvhas"]
+resource_name = "main_menu"
+script/source = "extends Panel
+@onready var GAMEPLAY_SCENE: Node3D = $\"../..\"
+@onready var ADDRES_ENTRY: LineEdit = $MarginContainer/VBoxContainer/addres_entry
+
+const PLAYER: PackedScene = preload(\"res://scenes/player_node.tscn\")
+const PORT: int = 9999
+var enet_peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+
+func _on_host_button_pressed() -> void:
+	hide()
+	
+	enet_peer.create_server(PORT)
+	multiplayer.multiplayer_peer = enet_peer 
+	multiplayer.peer_connected.connect(_add_player)
+	_add_player(multiplayer.get_unique_id())
+
+func _on_join_button_pressed() -> void:
+	hide()
+	
+	enet_peer.create_client(\"localhost\", PORT)
+	multiplayer.multiplayer_peer = enet_peer 
+
+
+func _add_player(peer_id: int) -> void:
+	var player = PLAYER.instantiate()
+	player.name = str(peer_id)
+	GAMEPLAY_SCENE.add_child(player)
+"
+
+[node name="gameplay_scene" type="Node3D"]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://dyrsuciwvjmd8")
+spawn_path = NodePath("..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xpbwm")
+
+[node name="level" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+material_override = SubResource("StandardMaterial3D_b2a1o")
+calculate_tangents = false
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(7, 1, 7)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+size = Vector3(7, 1, 7)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 8.5, -20)
+size = Vector3(7, 1, 9)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 14.5, 0)
+size = Vector3(12, 1, 3)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 8.5, 18.5, 0)
+size = Vector3(12, 1, 3)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0, 1, 18.5, 21.5, 0)
+size = Vector3(12, 1, 3)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -8.875, 2, 0)
+radius = 2.0
+height = 11.25
+sides = 6
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.875, 8.05664, 0)
+radius = 2.0
+height = 16.2695
+sides = 6
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.125, 12.2996, 0)
+radius = 2.0
+height = 9.78369
+sides = 6
+
+[node name="CSGCylinder3D4" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 21.125, 9.05664, -8)
+radius = 2.0
+height = 16.2695
+sides = 6
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 2, 0)
+size = Vector3(4, 5, 3)
+
+[node name="CSGTorus3D" type="CSGTorus3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+inner_radius = 5.0
+outer_radius = 6.0
+sides = 5
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 11, 23.5, 0)
+size = Vector3(1, 4, 5)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 8, 20.5, 0)
+size = Vector3(1, 4, 5)
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 6, 18.5, 0)
+size = Vector3(1, 4, 5)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 14, -3)
+size = Vector3(1, 1, 3)
+
+[node name="CSGBox3D14" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 23, 13, -2)
+size = Vector3(1, 1, 3)
+
+[node name="CSGBox3D15" type="CSGBox3D" parent="level"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 24, 12, 0)
+size = Vector3(1, 1, 3)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="level"]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 19, 15, -1)
+size = Vector3(1, 1, 3)
+
+[node name="CSGBox3D13" type="CSGBox3D" parent="level"]
+transform = Transform3D(-2.98023e-08, 0, 1, 0, 1, 0, -1, 0, -2.98023e-08, 19, 16, 1)
+size = Vector3(1, 1, 3)
+
+[node name="CSGCylinder3D5" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 21, 8, -14)
+radius = 5.0
+
+[node name="CSGCylinder3D6" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 21, 9, -9)
+radius = 6.0
+
+[node name="CSGCylinder3D7" type="CSGCylinder3D" parent="level"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 21, 9, -4)
+radius = 3.0
+
+[node name="AVG_point" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+visible = false
+material_override = SubResource("ShaderMaterial_1126i")
+mesh = SubResource("SphereMesh_cd025")
+
+[node name="canvas_layer" type="CanvasLayer" parent="."]
+
+[node name="main_menu" type="Panel" parent="canvas_layer"]
+anchors_preset = -1
+anchor_left = 0.330469
+anchor_top = 0.330556
+anchor_right = 0.669531
+anchor_bottom = 0.669444
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = SubResource("GDScript_mvhas")
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="canvas_layer/main_menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="canvas_layer/main_menu/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="canvas_layer/main_menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Main menu."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="host_button" type="Button" parent="canvas_layer/main_menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Host"
+
+[node name="join_button" type="Button" parent="canvas_layer/main_menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join"
+
+[node name="addres_entry" type="LineEdit" parent="canvas_layer/main_menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Enter Addres"
+alignment = 1
+
+[connection signal="pressed" from="canvas_layer/main_menu/MarginContainer/VBoxContainer/host_button" to="canvas_layer/main_menu" method="_on_host_button_pressed"]
+[connection signal="pressed" from="canvas_layer/main_menu/MarginContainer/VBoxContainer/join_button" to="canvas_layer/main_menu" method="_on_join_button_pressed"]

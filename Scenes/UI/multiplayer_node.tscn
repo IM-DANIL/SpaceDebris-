@@ -1,0 +1,231 @@
+[gd_scene load_steps=9 format=3 uid="uid://cbux6vv6rx1pr"]
+
+[ext_resource type="Theme" uid="uid://dcbcfdb6b1kkv" path="res://Assets/UI/UITheme.tres" id="1_7tul2"]
+[ext_resource type="Script" uid="uid://d1e4881f0ynhu" path="res://Scripts/multiplayer_node_script.gd" id="2_nnn47"]
+[ext_resource type="Texture2D" uid="uid://dqvfibc7wfs5c" path="res://Assets/Textures/MenuImage.png" id="3_upiri"]
+[ext_resource type="Script" uid="uid://d4be2yym0ojry" path="res://Scripts/steam_node_scripts.gd" id="4_1rn83"]
+[ext_resource type="Script" uid="uid://do42igroyop1b" path="res://Scripts/enet_node_script.gd" id="4_3oqhw"]
+[ext_resource type="Script" uid="uid://d0yvaoguqdu7j" path="res://Scripts/network_manager.gd" id="4_jyoy6"]
+[ext_resource type="PackedScene" uid="uid://blnm2omm6asst" path="res://Scenes/UI/enet_network.tscn" id="5_rkbe6"]
+[ext_resource type="PackedScene" uid="uid://ymirhf67rdco" path="res://Scenes/UI/steam_network.tscn" id="6_4amm3"]
+
+[node name="multiplayer_node" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1_7tul2")
+script = ExtResource("2_nnn47")
+
+[node name="background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_upiri")
+
+[node name="network_manager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_jyoy6")
+ENET_NETWORK_SCENE = ExtResource("5_rkbe6")
+STEAM_NETWORK_SCENE = ExtResource("6_4amm3")
+
+[node name="multiplayer_type_panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(640, 180)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="multiplayer_type_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="multiplayer_type_panel/MarginContainer"]
+layout_mode = 2
+
+[node name="singleplayer_button" type="Button" parent="multiplayer_type_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Singleplayer"
+
+[node name="LAN_button" type="Button" parent="multiplayer_type_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "LAN Multiplayer"
+
+[node name="steam_button" type="Button" parent="multiplayer_type_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Steam Multiplayer"
+
+[node name="enet_node" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_3oqhw")
+
+[node name="enet_panel" type="Panel" parent="enet_node"]
+custom_minimum_size = Vector2(640, 180)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="enet_node/enet_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="enet_node/enet_panel/MarginContainer"]
+layout_mode = 2
+
+[node name="host_button" type="Button" parent="enet_node/enet_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Сreate a lobby"
+
+[node name="join_button" type="Button" parent="enet_node/enet_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Join the lobby"
+
+[node name="back_button" type="Button" parent="enet_node/enet_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Back"
+
+[node name="steam_node" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_1rn83")
+
+[node name="steam_panel" type="Panel" parent="steam_node"]
+custom_minimum_size = Vector2(640, 180)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="steam_node/steam_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="steam_node/steam_panel/MarginContainer"]
+layout_mode = 2
+
+[node name="host_button" type="Button" parent="steam_node/steam_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Сreate a lobby"
+
+[node name="list_button" type="Button" parent="steam_node/steam_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Lobby List"
+
+[node name="back_button" type="Button" parent="steam_node/steam_panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+text = "Back"
+
+[node name="list_node" type="MarginContainer" parent="steam_node"]
+custom_minimum_size = Vector2(640, 320)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="steam_node/list_node"]
+visible = false
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="steam_node/list_node/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[node name="Panel2" type="Panel" parent="steam_node/list_node/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[node name="Panel3" type="Panel" parent="steam_node/list_node/VBoxContainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+
+[connection signal="pressed" from="multiplayer_type_panel/MarginContainer/VBoxContainer/LAN_button" to="." method="_on_lan_button_pressed"]
+[connection signal="pressed" from="multiplayer_type_panel/MarginContainer/VBoxContainer/steam_button" to="." method="_on_steam_button_pressed"]
+[connection signal="pressed" from="enet_node/enet_panel/MarginContainer/VBoxContainer/host_button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="enet_node/enet_panel/MarginContainer/VBoxContainer/join_button" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="enet_node/enet_panel/MarginContainer/VBoxContainer/back_button" to="enet_node" method="_on_back_button_pressed"]
+[connection signal="pressed" from="steam_node/steam_panel/MarginContainer/VBoxContainer/host_button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="steam_node/steam_panel/MarginContainer/VBoxContainer/back_button" to="steam_node" method="_on_back_button_pressed"]

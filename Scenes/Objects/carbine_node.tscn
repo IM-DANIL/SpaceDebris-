@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://ci4eg448vm1rw"]
+
+[ext_resource type="Script" uid="uid://ghjmf7sjtnxt" path="res://Scripts/carbine_node.gd" id="1_iusv5"]
+[ext_resource type="Texture2D" uid="uid://bxpsm1lv87ady" path="res://Assets/Textures/Texture_01.png" id="1_nl6x1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h70hl"]
+albedo_texture = ExtResource("1_nl6x1")
+uv1_triplanar = true
+
+[node name="CarbineNode" type="Node3D"]
+script = ExtResource("1_iusv5")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+material_override = SubResource("StandardMaterial3D_h70hl")
+radius = 0.25

@@ -1,0 +1,151 @@
+[gd_scene load_steps=16 format=3 uid="uid://dsswvstdg7h0x"]
+
+[ext_resource type="Script" uid="uid://bivrod8gfxk35" path="res://Scripts/player_script.gd" id="1_howj5"]
+[ext_resource type="Texture2D" uid="uid://dk3cr4pc74pi0" path="res://Assets/Textures/Texture_4.png" id="2_4x3xj"]
+[ext_resource type="Script" uid="uid://8topsfm0vkq2" path="res://Scripts/camera_script.gd" id="3_b3upl"]
+[ext_resource type="Material" uid="uid://bve0ydnggk5hd" path="res://Assets/Textures/Outline.tres" id="3_mwqtu"]
+[ext_resource type="Shader" uid="uid://d1v0rcxcjcx2m" path="res://Assets/UI/Ps1Shader.gdshader" id="4_4x3xj"]
+[ext_resource type="Script" uid="uid://c4wxquy3524vc" path="res://Scripts/player_ui_script.gd" id="5_jjsxk"]
+[ext_resource type="Texture2D" uid="uid://cnfrlwxbdcoen" path="res://Assets/Textures/Aim.png" id="6_73oo2"]
+[ext_resource type="PackedScene" uid="uid://ddqsnul7lwv6d" path="res://Scenes/Objects/hand.tscn" id="6_smehm"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_howj5"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("player_model:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("hands_node/left:position")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath("hands_node/left:rotation")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath("hands_node/right:position")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("hands_node/right:rotation")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v7tvf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjax8"]
+next_pass = ExtResource("3_mwqtu")
+albedo_texture = ExtResource("2_4x3xj")
+uv1_triplanar = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_oc1kf"]
+resource_local_to_scene = true
+radial_segments = 16
+rings = 8
+
+[sub_resource type="SphereMesh" id="SphereMesh_0mr0g"]
+radius = 0.25
+height = 0.5
+radial_segments = 16
+rings = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b3upl"]
+render_priority = 0
+shader = ExtResource("4_4x3xj")
+shader_parameter/dither_amount = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_howj5"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[node name="player" type="CharacterBody3D" groups=["Player", "player"]]
+collision_layer = 2
+script = ExtResource("1_howj5")
+
+[node name="PlayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_howj5")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+visible = false
+shape = SubResource("SphereShape3D_v7tvf")
+
+[node name="player_model" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_yjax8")
+visibility_range_begin = 0.5
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="player_model"]
+mesh = SubResource("SphereMesh_oc1kf")
+
+[node name="CSGMesh3D2" type="CSGMesh3D" parent="player_model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+mesh = SubResource("SphereMesh_0mr0g")
+
+[node name="camera_node" type="Node3D" parent="." node_paths=PackedStringArray("PLAYER", "PLAYER_MODEL")]
+script = ExtResource("3_b3upl")
+PLAYER = NodePath("..")
+PLAYER_MODEL = NodePath("../player_model")
+
+[node name="camera" type="Camera3D" parent="camera_node"]
+fov = 90.0
+
+[node name="hands_raycast" type="RayCast3D" parent="camera_node/camera"]
+target_position = Vector3(0, 0, -10)
+collision_mask = 4
+
+[node name="left_pos" type="Marker3D" parent="camera_node/camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, -0.25, -0.5)
+
+[node name="right_pos" type="Marker3D" parent="camera_node/camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, -0.25, -0.5)
+
+[node name="hands_node" type="CanvasLayer" parent="."]
+
+[node name="left" parent="hands_node" node_paths=PackedStringArray("HAND_POS") instance=ExtResource("6_smehm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+IS_LEFT = true
+HAND_POS = NodePath("../../camera_node/camera/left_pos")
+
+[node name="right" parent="hands_node" node_paths=PackedStringArray("HAND_POS") instance=ExtResource("6_smehm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+HAND_POS = NodePath("../../camera_node/camera/right_pos")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="ps1_shader" type="MeshInstance3D" parent="UI"]
+visible = false
+material_override = SubResource("ShaderMaterial_b3upl")
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_howj5")
+skeleton = NodePath("../../camera_node/camera")
+
+[node name="player_UI" type="Control" parent="UI" node_paths=PackedStringArray("HANDS_RAYCAST")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_jjsxk")
+HANDS_RAYCAST = NodePath("../../camera_node/camera/hands_raycast")
+BRIGHT_COLOR_AIM = Color(1, 1, 1, 0.509804)
+DIM_COLOR_AIM = Color(1, 1, 1, 0.0784314)
+
+[node name="aim_point" type="TextureRect" parent="UI/player_UI"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_73oo2")
+expand_mode = 1

@@ -1,0 +1,243 @@
+[gd_scene load_steps=8 format=3 uid="uid://cmioaalj7xv0k"]
+
+[ext_resource type="Script" uid="uid://d0yvaoguqdu7j" path="res://Scripts/network_manager.gd" id="1_5yqde"]
+[ext_resource type="PackedScene" uid="uid://blnm2omm6asst" path="res://Scenes/UI/enet_network.tscn" id="2_74kib"]
+[ext_resource type="PackedScene" uid="uid://ymirhf67rdco" path="res://Scenes/UI/steam_network.tscn" id="3_esvuh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ygb4d"]
+sky_top_color = Color(0.109804, 0.0431373, 0.129412, 1)
+sky_horizon_color = Color(0.160791, 0.127457, 0.170595, 1)
+ground_bottom_color = Color(0.109804, 0.0431373, 0.129412, 1)
+ground_horizon_color = Color(0.160791, 0.127457, 0.170595, 1)
+
+[sub_resource type="Sky" id="Sky_nd3ab"]
+sky_material = SubResource("ProceduralSkyMaterial_ygb4d")
+
+[sub_resource type="Environment" id="Environment_ceu4k"]
+background_mode = 2
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_nd3ab")
+ambient_light_source = 2
+ambient_light_color = Color(0.521141, 0.521141, 0.521141, 1)
+ambient_light_energy = 0.67
+reflected_light_source = 1
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="GDScript" id="GDScript_5yqde"]
+script/source = "extends Control
+@onready var NETWORK_MANAGER: Node = %network_manager
+@onready var STEAM_HUD: Control = $\"../steam_HUD\"
+
+func _init() -> void:
+	SettingsManager.IS_MULTIPLAYER = true
+
+
+func _ready() -> void:
+	if OS.has_feature(\"dedicated_server\"):
+		print(\"Starting dedicated server...\")
+		NETWORK_MANAGER.become_host(true)
+
+
+func _on_host_button_pressed() -> void:
+	print(\"Become host pressed.\")
+	hide()
+	STEAM_HUD.hide()
+	NETWORK_MANAGER.become_host()
+
+
+func _on_join_button_pressed() -> void:
+	print(\"Join as player two.\")
+	join_lobby()
+
+
+func _on_steam_button_pressed() -> void:
+	print(\"Using Steam.\")
+	STEAM_HUD.visible = true
+	SteamManager.initialize_steam()
+	Steam.lobby_match_list.connect(_on_lobby_match_list)
+	NETWORK_MANAGER.active_network_type = NETWORK_MANAGER.MULTIPLAYER_NETWORK_TYPE.STEAM
+
+
+func _on_lobby_match_list(lobbies: Array) -> void:
+	print(\"On lobby match list.\")
+	for lobby_child in $\"../steam_HUD/Panel/lobbies/VBoxContainer\".get_children():
+		lobby_child.queue_free()
+	
+	for lobby in lobbies:
+		var lobby_name: String = Steam.getLobbyData(lobby, \"name\")
+		if lobby_name != \"\" and lobby_name == \"SPACE_DEBRIS\":
+			var lobby_mode: String = Steam.getLobbyData(lobby, \"mode\")
+			
+			var lobby_button: Button = Button.new()
+			lobby_button.set_text(lobby_name + \"|\" + lobby_mode )
+			lobby_button.set_size(Vector2(64, 32))
+			lobby_button.set_name(\"lobby_%s\" %lobby)
+			lobby_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			lobby_button.connect(\"pressed\", Callable(self, \"join_lobby\").bind(lobby))
+			
+			$\"../steam_HUD/Panel/lobbies/VBoxContainer\".add_child(lobby_button)
+
+
+func list_steam_lobbies() -> void:
+	print(\"List steam lobbies.\")
+	NETWORK_MANAGER.list_lobbies()
+
+
+func join_lobby(lobby_id: int = 0):
+	print(\"Join as player two.\")
+	hide()
+	STEAM_HUD.hide()
+	NETWORK_MANAGER.join_as_client(lobby_id)
+"
+
+[node name="steam_multiplayer_example" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ceu4k")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://dsswvstdg7h0x")
+spawn_limit = 4
+
+[node name="network_manager" type="Node" parent="." node_paths=PackedStringArray("SPAWN_NODE")]
+unique_name_in_owner = true
+script = ExtResource("1_5yqde")
+ENET_NETWORK_SCENE = ExtResource("2_74kib")
+STEAM_NETWORK_SCENE = ExtResource("3_esvuh")
+SPAWN_NODE = NodePath("")
+
+[node name="multiplayer_node" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("GDScript_5yqde")
+
+[node name="Panel" type="Panel" parent="multiplayer_node"]
+custom_minimum_size = Vector2(320, 180)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="multiplayer_node/Panel"]
+custom_minimum_size = Vector2(160, 90)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -45.0
+offset_right = 80.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="host_button" type="Button" parent="multiplayer_node/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(64, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Host"
+text_overrun_behavior = 3
+icon_alignment = 1
+
+[node name="join_button" type="Button" parent="multiplayer_node/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(64, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Join"
+text_overrun_behavior = 3
+icon_alignment = 1
+
+[node name="steam_button" type="Button" parent="multiplayer_node/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(64, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Steam"
+text_overrun_behavior = 3
+icon_alignment = 1
+
+[node name="steam_HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="steam_HUD"]
+custom_minimum_size = Vector2(320, 180)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -180.0
+offset_bottom = 180.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="options" type="VBoxContainer" parent="steam_HUD/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="host_button" type="Button" parent="steam_HUD/Panel/options"]
+custom_minimum_size = Vector2(64, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "Host"
+text_overrun_behavior = 3
+icon_alignment = 1
+
+[node name="list_button" type="Button" parent="steam_HUD/Panel/options"]
+custom_minimum_size = Vector2(64, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "List"
+text_overrun_behavior = 3
+icon_alignment = 1
+
+[node name="lobbies" type="ScrollContainer" parent="steam_HUD/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="steam_HUD/Panel/lobbies"]
+layout_mode = 2
+
+[connection signal="pressed" from="multiplayer_node/Panel/VBoxContainer/host_button" to="multiplayer_node" method="_on_host_button_pressed"]
+[connection signal="pressed" from="multiplayer_node/Panel/VBoxContainer/join_button" to="multiplayer_node" method="_on_join_button_pressed"]
+[connection signal="pressed" from="multiplayer_node/Panel/VBoxContainer/steam_button" to="multiplayer_node" method="_on_steam_button_pressed"]
+[connection signal="pressed" from="steam_HUD/Panel/options/host_button" to="multiplayer_node" method="_on_host_button_pressed"]
+[connection signal="pressed" from="steam_HUD/Panel/options/list_button" to="multiplayer_node" method="list_steam_lobbies"]
